@@ -86,15 +86,43 @@ However for method 4, i.e. Newton's Divided Difference Method, some preprocessin
 **- TBD (Divyansh)**
 
 ## User Input Processing
+Post initialisation, the user can contiously enter prompts. This part is implemented via an infinite loop:
 
+```cpp
+string input; // User Input Line
+double X_test; // Inputted X Value
+int method; // Inputted Method of interpolation
+
+while true{
+    - get user input line from cin
+
+    - check if input is exit then exit
+    - check if input is help then print help
+    - check if input is poly then call NewtonPolynomial() and LagrangePolynomial() method of the interpolator to print the polynomials
+
+    - if no cases match, extract X_test and method from user input, and print error if unable to do so.
+    - call interpolator.calculateValue(X_test, method);
+}
+```
+
+The `calculateValue()` function does case based matching on the value of the `method` argument. Depending on the value of `method`, it calls the appropriate private interpolation function and the function returns the variable `value`. If method is not in {1, 2, 3, 4, 5} then print error. 
+
+The `value` returned by the specific interpolation function is printed on the console.
+
+The next subsections explain the implementation details of each of the interpolation methods.
 
 ### Piecewise Constant Interpolation Implementation
+**- TBD (Adarsh)**
 
 ### Nearest Neighbor Interpolation Implementation
+**- TBD (Shreyan)**
 
 ### Linear Interpolation Implementation
+**- TBD (Hayagrivan)**
 
 ### Newton’s Divided Difference Interpolation Implementation
+**- TBD (Divyansh)**
 
 ### Lagrange Interpolation Implementation
+**- TBD (Yash)** (Also need to add explanation of Polynomial Evaluation in the `lagrangePolynomial()` function)
 
