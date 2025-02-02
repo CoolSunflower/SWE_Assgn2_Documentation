@@ -29,14 +29,16 @@ private:
     // Information for Newtons Divided Difference Method, populated during Initialisation step
     vector<double> coefficients;
     vector<double> x_values;
-    string NewtonsPolynomial;
+    vector<double> expanded_poly;       // Stores the final polynomial coefficients
+    string NewtonPolynomial1;           // Stores intermediate polynomial expression
+    string NewtonPolynomial2;           // Stores final polynomial expression
 
 public:
     void processInput(vector<Point>&); // This function is responsible for initialisation of the data structures used in the entire interpolation process
     
     void calculateValue(double x, int method); // This function implements the main user interface to predict the interpolated value for any input via the specified interpolation method
 
-    void NewtonPolynomial(void); // Prints the Newtons Polynomial calculted during initialisation
+    void NewtonPolynomial(void); // Prints the Newtons Polynomial (both intermediate and final) calculted during initialisation
     void LagrangePolynomial(void); // Prints the Lagrange Polynomial for the interpolation
 
 private:
@@ -52,10 +54,15 @@ private:
 ## Data Loading
 The user provided file name is read into a string called `fileName`. This string is passed as a const char* to the `loadData()` function. The `loadData()` function returns a vector of `Point`'s. This vector contains all the points that were successfully parsed from the user input file, assuming no errors.
 
-**Working**: 
+**Working**: We start by creating a temporary vector of `Point`'s called tempPoints and a file stream object from the user provided filename. At this stage if the file is not open we assume that the user provided filename is either invalid or the user does not have appropriate permission and we raise an error for the same, following which we exit with code 1.
 
+If the file is successfully opened, we parse the file line by line. Each line is read from the file via the `getline()` function. From this line we try to extract the double values of x and y, in case of any error a user warning is raised with the contents of the line. If the values of x and y are successfully parsed from that line, we create a push a `Point` into the temporary vector.
 
+Once all lines in the files are parsed, the `Point`'s are sorted (based on their X values, look at the < operator declaration in the struct). After this 2 security checks are implemented:
+1. There exists atleast one point.
+2. There does not exist any two points with same X values (checked by comparing adjacent enteries since Points are sorted on X).
 
+The final temporary vector of `Point`'s is returned by the function containig all the values that were successfully read from the file in a sorted order.
 
 ## Interpolator Initialisation 
 
