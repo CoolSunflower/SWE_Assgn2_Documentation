@@ -112,7 +112,37 @@ The `value` returned by the specific interpolation function is printed on the co
 The next subsections explain the implementation details of each of the interpolation methods.
 
 ### Piecewise Constant Interpolation Implementation
-**- TBD (Adarsh)**
+
+The **Piecewise Constant Interpolation** method, also known as the **nearest left interpolation**, approximates the function as a stepwise constant function. 
+
+So, given a set of sorted points \((x_0, y_0), (x_1, y_1), ..., (x_n, y_n)\), this method finds the interpolated value \( f(x) \) based on the closest point to the left (or the exact match if \( x \) is one of the given data points). Formally, the this can be defined as:
+
+\( f(x) = y_i where x_i <= x < x_{i+1} \)
+
+Edge Cases: If x is outside the given data range:
+- For x < x_0, return y_0 (extrapolate using the first data point).
+- For x > x_n, return y_n (extrapolate using the last data point).
+
+This behaviour is implemented by using binary search to find the appropriate interval. Since the points are already sorted on their X values during input this allows for a O(log n) implementation.
+
+```cpp
+double piecewiseConstantInterpolation(double x){
+    - Handle edge cases
+
+    - Binary Search to find correct interval
+    low = 0, high = points.size() - 1;
+    while (low <= high){
+        - calculate mid = middle index
+
+        - if x value of mid Point <= x and x value of mid + 1 > x
+          then we have found the appropriate interval, so return y value of mid Point
+
+        - otherwise if x value of mid point > x
+                    then set high = mid - 1
+                    else set low = mid + 1
+    }
+}
+```
 
 ### Nearest Neighbor Interpolation Implementation
 **- TBD (Shreyan)**
