@@ -54,6 +54,12 @@ private:
 ## Data Loading
 The user provided file name is read into a string called `fileName`. This string is passed as a const char* to the `loadData()` function. The `loadData()` function returns a vector of `Point`'s. This vector contains all the points that were successfully parsed from the user input file, assuming no errors.
 
+```cpp
+	string fileName; ...
+	getline(cin, fileName);
+	vector<Point> points = loadData(fileName.c_str());
+```
+
 **Working**: We start by creating a temporary vector of `Point`'s called tempPoints and a file stream object from the user provided filename. At this stage if the file is not open we assume that the user provided filename is either invalid or the user does not have appropriate permission and we raise an error for the same, following which we exit with code 1.
 
 If the file is successfully opened, we parse the file line by line. Each line is read from the file via the `getline()` function. From this line we try to extract the double values of x and y, in case of any error a user warning is raised with the contents of the line. If the values of x and y are successfully parsed from that line, we create a push a `Point` into the temporary vector.
@@ -65,7 +71,19 @@ Once all lines in the files are parsed, the `Point`'s are sorted (based on their
 The final temporary vector of `Point`'s is returned by the function containig all the values that were successfully read from the file in a sorted order.
 
 ## Interpolator Initialisation 
+An interpolator object is created and the processInput function is called using the vector of `Point`'s returned by the loadData function.
 
+```cpp
+	// Parse File in the interpolator
+	interpolater.processInput(points);
+```
+
+For interpolation methods 1, 2, 3 and 5 no further processing needs to be done on the input and hence the input `vector<Point>` is directly stored in private variable `points` of the Interpolation class.
+
+However for method 4, i.e. Newton's Divided Difference Method, some preprocessing needs to be done to populate the private variables `coefficients`, `x_values` and `expanded_poly` of the Interpolation class. This function also calculates the string of the Intermediate and Expanded Polynomial form and saves it in the respective string variables to print if `poly` is called by the user.
+
+
+**- TBD (Divyansh)**
 
 ## User Input Processing
 
