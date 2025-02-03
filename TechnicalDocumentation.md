@@ -148,12 +148,9 @@ double piecewiseConstantInterpolation(double x){
 ### Linear Interpolation Implementation
 **- TBD (Hayagrivan)**
 
----
+### Newton’s Divided Difference Interpolation Implementation
 
-### **Newton’s Divided Difference Interpolation Implementation**
-
-### **Overview**
-Newton’s **Divided Difference Interpolation** constructs an interpolating polynomial using **recursively computed divided differences**. Given a sorted set of points:
+Newton’s **Divided Difference Interpolation** constructs an interpolating polynomial using recursively computed divided differences. Given a sorted set of points:
 
 \[
 (x_0, y_0), (x_1, y_1), ... , (x_n, y_n)
@@ -171,17 +168,14 @@ where **\( f[x_0, x_1, ..., x_k] \)** are the **divided differences**, computed 
 f[x_i, x_{i+1}, ..., x_{i+k}] = {f[x_{i+1}, ..., x_{i+k}] - f[x_i, ..., x_{i+k-1}]} / {x_{i+k} - x_i}
 \]
 
-Newton's method is particularly useful for constructing **incrementally extensible polynomials** and provides efficient evaluation using **Horner’s form**.
-
-### **Preprocessing Step**
 Before interpolation, we need to:
 1. **Extract the input data** into `x_values` and `y_values`.
 2. **Compute the divided difference table** to find polynomial coefficients.
 3. **Store intermediate and expanded polynomial forms**.
 
-This preprocessing is done in the `processInput` function.
+This preprocessing is done in the `processInput()` function.
 
-#### **Computing the Divided Difference Table**
+#### Computing the Divided Difference Table
 ```cpp
 // Initialize first column with given y values
 for (int i = 0; i < n; i++) {
@@ -197,9 +191,9 @@ for (int j = 1; j < n; j++) {
 ```
 **Explanation:**
 - The first column is simply the function values **\( y_i \)**.
-- Each subsequent column is computed recursively using **divided differences**.
+- Each subsequent column is computed recursively using divided differences.
 
-#### **Extracting Newton's Coefficients**
+#### Extracting Newton's Coefficients
 ```cpp
 // Store coefficients of Newton's polynomial
 coefficients.clear();
@@ -207,11 +201,11 @@ for (int i = 0; i < n; i++) {
     coefficients.push_back(divided_diff[0][i]);
 }
 ```
-These coefficients will later be used to **evaluate the interpolating polynomial** efficiently.
+These coefficients will later be used to evaluate the interpolating polynomial.
 
-### **Constructing the Polynomial Representation**
+#### Constructing the Polynomial Representation
 
-#### **Intermediate Polynomial Form** (Newton’s Recursive Form)
+##### **Intermediate Polynomial Form** (Newton’s Recursive Form)
 ```cpp
 ostringstream oss;
 oss << fixed << setprecision(2);
@@ -225,13 +219,13 @@ for (int i = 1; i < n; i++) {
 oss << endl;
 NewtonPolynomial1 = oss.str();
 ```
-This constructs the **recursive polynomial form**, which looks like:
+This constructs the recursive polynomial form, which looks like:
 
 \[
 P(x) = a_0 + a_1 (x - x_0) + a_2 (x - x_0)(x - x_1) + ...
 \]
 
-#### **Expanded Polynomial Form**
+##### **Expanded Polynomial Form**
 To convert the recursive form into a **fully expanded polynomial**, we perform polynomial multiplication:
 
 ```cpp
@@ -278,7 +272,7 @@ ss << endl;
 NewtonPolynomial2 = ss.str();
 ```
 
-### **Polynomial Evaluation**
+#### **Polynomial Evaluation**
 Once the coefficients are precomputed, **evaluating \( P(x) \) for any given \( x \)** can be done in **O(n) time** using:
 
 ```cpp
@@ -295,18 +289,9 @@ double newtonInterpolation(double x)
     return result;
 }
 ```
-This efficiently evaluates the polynomial using **nested multiplication (Horner's method)**.
+This efficiently evaluates the polynomial using nested multiplication (Horner's method).
 
-### **Summary**
-1. **Divided Difference Table:** Precomputed in **O(n²)** time.
-2. **Intermediate Polynomial:** Stored as a recursive representation.
-3. **Expanded Polynomial:** Derived by multiplying terms, stored as coefficients.
-4. **Evaluation:** Done in **O(n)** using Horner's method.
-
-Newton’s method allows efficient polynomial evaluation **without recalculating divided differences**, making it particularly useful for adaptive interpolation.
-
----
-
+In summary, the divided difference table is precomputed in O(n²) time, following which the intermediate and expanded polynomials are calculated and stored as string. These strings can just be printed whenever the user calls the `poly` command. Evaluation is done with the help of Horner's method in O(n) time.
 
 ### Lagrange Interpolation Implementation
 **- TBD (Yash)** (Also need to add explanation of Polynomial Evaluation in the `lagrangePolynomial()` function)
