@@ -146,7 +146,47 @@ double piecewiseConstantInterpolation(double x){
 **- TBD (Shreyan)**
 
 ### Linear Interpolation Implementation
-**- TBD (Hayagrivan)**
+
+**Linear Interpolation** approximates the function by connecting consecutive data points with straight lines. For a given x, it identifies the two surrounding points and computes f(x) using the linear equation between them. This method ensures continuity between adjacent intervals but does not guarantee smoothness.
+
+**Formula**  
+For x in the interval \( x_i, x_{i+1} \), the interpolated value is:  
+
+f(x) = y_i + (y_{i+1} - y_i)/(x_{i+1} - x_i) *(x - x_i)
+
+**Edge Cases**  
+- If \( x < x_0 \), return y_0  (extrapolate using the first point).  
+- If \( x >= x_n \), return  y_n  (extrapolate using the last point).  
+
+**Implementation Steps**  
+1. **Sort Points**: Ensure data points are sorted by x -values.  
+2. **Interval Search**: Use binary search (`lower_bound`) to find the first point \( x_r \geq x \). The left point is the previous index.  
+3. **Edge Handling**: If  x  is outside the data range, return the nearest endpoint's y -value.  
+4. **Linear Calculation**: Compute the interpolated  y -value using the linear formula between \( (x_l, y_l) \) and \( (x_r, y_l) \).  
+
+**Code**  
+```cpp
+double linearInterpolation(double x) {
+    int n = points.size();
+    sort(points.begin(), points.end()); // Ensure sorted order
+
+    Point p = {x, 0.0};
+    auto it = lower_bound(points.begin(), points.end(), p);
+    
+    // Edge cases: x outside data range
+    if (it == points.end()) return points[n - 1].y;
+    if (it == points.begin()) return points[0].y;
+
+    int r = it - points.begin();
+    int l = r - 1;
+
+    // Linear formula application
+    double slope = (points[r].y - points[l].y) / (points[r].x - points[l].x);
+    return points[l].y + slope * (x - points[l].x);
+}
+```
+
+This method is efficient for dense datasets and provides piecewise linear approximations.
 
 ### Newton’s Divided Difference Interpolation Implementation
 
