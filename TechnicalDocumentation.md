@@ -153,7 +153,35 @@ double piecewiseConstantInterpolation(double x){
 ```
 
 ### Nearest Neighbor Interpolation Implementation
-**- TBD (Shreyan)**
+
+The **Nearest Neighbor Interpolation** method estimates the function by assigning \( f(x) \) to the value of the closest known data point. This approach is useful when a simple, non-continuous approximation is sufficient.
+
+Given a set of sorted points \((x_0, y_0), (x_1, y_1), ..., (x_n, y_n)\), the interpolated value is determined as:
+
+\[
+f(x) = y_i \quad \text{where} \quad i = \arg\min_j |x_j - x|
+\]
+
+**Cases:**
+- If \( x \) exactly matches a given \( x_i \), return \( y_i \).
+- If \( x \) falls between two points, return the \( y \)-value of the closest point.
+- If multiple points are equidistant from \( x \), the first occurrence in the dataset is chosen.
+
+This approach is implemented using a simple linear search, iterating through all data points to find the closest one. Since it checks every element, the complexity is **O(n)**.
+
+```cpp
+double nearestNeighborInterpolation(double x){
+    - Initialize nearestIndex = 0 and minDistance = absolute difference between first point and x
+
+    - Iterate through all points:
+        - Compute absolute difference between current point’s x value and x
+        - If this distance is smaller than minDistance:
+            - Update minDistance
+            - Update nearestIndex to current index
+
+    - Return y-value at nearestIndex
+}
+```
 
 ### Linear Interpolation Implementation
 
