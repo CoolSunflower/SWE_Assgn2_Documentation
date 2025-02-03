@@ -83,8 +83,6 @@ For interpolation methods 1, 2, 3 and 5 no further processing needs to be done o
 However for method 4, i.e. Newton's Divided Difference Method, some preprocessing needs to be done to populate the private variables `coefficients`, `x_values` and `expanded_poly` of the Interpolation class. This function also calculates the string of the Intermediate and Expanded Polynomial form and saves it in the respective string variables to print if `poly` is called by the user.
 
 
-**- TBD (Divyansh)**
-
 ## User Input Processing
 Post initialisation, the user can contiously enter prompts. This part is implemented via an infinite loop:
 
@@ -150,8 +148,165 @@ double piecewiseConstantInterpolation(double x){
 ### Linear Interpolation Implementation
 **- TBD (Hayagrivan)**
 
-### Newton’s Divided Difference Interpolation Implementation
-**- TBD (Divyansh)**
+---
+
+### **Newton’s Divided Difference Interpolation Implementation**
+
+### **Overview**
+Newton’s **Divided Difference Interpolation** constructs an interpolating polynomial using **recursively computed divided differences**. Given a sorted set of points:
+
+\[
+(x_0, y_0), (x_1, y_1), ... , (x_n, y_n)
+\]
+
+the interpolating polynomial is constructed in the form:
+
+\[
+P(x) = f[x_0] + f[x_0, x_1](x - x_0) + f[x_0, x_1, x_2](x - x_0)(x - x_1) + ...
+\]
+
+where **\( f[x_0, x_1, ..., x_k] \)** are the **divided differences**, computed using:
+
+\[
+f[x_i, x_{i+1}, ..., x_{i+k}] = {f[x_{i+1}, ..., x_{i+k}] - f[x_i, ..., x_{i+k-1}]} / {x_{i+k} - x_i}
+\]
+
+Newton's method is particularly useful for constructing **incrementally extensible polynomials** and provides efficient evaluation using **Horner’s form**.
+
+### **Preprocessing Step**
+Before interpolation, we need to:
+1. **Extract the input data** into `x_values` and `y_values`.
+2. **Compute the divided difference table** to find polynomial coefficients.
+3. **Store intermediate and expanded polynomial forms**.
+
+This preprocessing is done in the `processInput` function.
+
+#### **Computing the Divided Difference Table**
+```cpp
+// Initialize first column with given y values
+for (int i = 0; i < n; i++) {
+    divided_diff[i][0] = y[i];
+}
+
+// Compute divided differences iteratively
+for (int j = 1; j < n; j++) {
+    for (int i = 0; i < n - j; i++) {
+        divided_diff[i][j] = (divided_diff[i + 1][j - 1] - divided_diff[i][j - 1]) / (x[i + j] - x[i]);
+    }
+}
+```
+**Explanation:**
+- The first column is simply the function values **\( y_i \)**.
+- Each subsequent column is computed recursively using **divided differences**.
+
+#### **Extracting Newton's Coefficients**
+```cpp
+// Store coefficients of Newton's polynomial
+coefficients.clear();
+for (int i = 0; i < n; i++) {
+    coefficients.push_back(divided_diff[0][i]);
+}
+```
+These coefficients will later be used to **evaluate the interpolating polynomial** efficiently.
+
+### **Constructing the Polynomial Representation**
+
+#### **Intermediate Polynomial Form** (Newton’s Recursive Form)
+```cpp
+ostringstream oss;
+oss << fixed << setprecision(2);
+oss << "P(x) = " << divided_diff[0][0];  // Start with first term
+for (int i = 1; i < n; i++) {
+    oss << " + (" << divided_diff[0][i] << ")";
+    for (int j = 0; j < i; j++) {
+        oss << "(x - " << x[j] << ")";
+    }
+}
+oss << endl;
+NewtonPolynomial1 = oss.str();
+```
+This constructs the **recursive polynomial form**, which looks like:
+
+\[
+P(x) = a_0 + a_1 (x - x_0) + a_2 (x - x_0)(x - x_1) + ...
+\]
+
+#### **Expanded Polynomial Form**
+To convert the recursive form into a **fully expanded polynomial**, we perform polynomial multiplication:
+
+```cpp
+// Construct final polynomial in expanded form
+vector<double> poly(1, 1.0); // Start with constant term 1
+expanded_poly.assign(n, 0);
+
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < poly.size(); j++) {
+        expanded_poly[j] += coefficients[i] * poly[j]; // Multiply coefficient
+    }
+    if (i < n - 1) {
+        poly = multiplyPoly(poly, x[i]); // Multiply by (x - x_i)
+    }
+}
+```
+This ensures that:
+
+\[
+P(x) = c_0 + c_1 x + c_2 x^2 + ...
+\]
+
+where `expanded_poly` stores the coefficients **\( c_i \)**.
+
+Finally, we format this into a readable string:
+```cpp
+stringstream ss;
+ss << fixed << setprecision(2);
+
+bool first_term = true;
+for (int i = expanded_poly.size() - 1; i >= 0; i--) {
+    if (fabs(expanded_poly[i]) > 1e-9) { // Ignore near-zero coefficients
+        if (!first_term) {
+            ss << (expanded_poly[i] > 0 ? " + " : " - ");
+        }
+        first_term = false;
+        ss << fabs(expanded_poly[i]);
+        if (i > 0) ss << "x";
+        if (i > 1) ss << "^" << i;
+    }
+}
+ss << endl;
+
+NewtonPolynomial2 = ss.str();
+```
+
+### **Polynomial Evaluation**
+Once the coefficients are precomputed, **evaluating \( P(x) \) for any given \( x \)** can be done in **O(n) time** using:
+
+```cpp
+double newtonInterpolation(double x)
+{
+    int n = coefficients.size();
+    double result = coefficients[0];  // Start with first term
+
+    double term = 1;
+    for (int i = 1; i < n; i++) {
+        term *= (x - x_values[i - 1]);  // Compute (x - x0)(x - x1)...(x - xi-1)
+        result += coefficients[i] * term;
+    }
+    return result;
+}
+```
+This efficiently evaluates the polynomial using **nested multiplication (Horner's method)**.
+
+### **Summary**
+1. **Divided Difference Table:** Precomputed in **O(n²)** time.
+2. **Intermediate Polynomial:** Stored as a recursive representation.
+3. **Expanded Polynomial:** Derived by multiplying terms, stored as coefficients.
+4. **Evaluation:** Done in **O(n)** using Horner's method.
+
+Newton’s method allows efficient polynomial evaluation **without recalculating divided differences**, making it particularly useful for adaptive interpolation.
+
+---
+
 
 ### Lagrange Interpolation Implementation
 **- TBD (Yash)** (Also need to add explanation of Polynomial Evaluation in the `lagrangePolynomial()` function)
