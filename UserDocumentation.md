@@ -13,7 +13,9 @@ Team Members:
 ```
 
 ## How to Run
-- TBD!
+We have provided the prebuilt binary in the root folder of the zip file. The name of the executable is `Interpolator.exe`. You can just double click to run the file, the execution steps and interface is explained in detail in the following sections.
+
+We have also provided the Visual Studio 2010 compatible project folder. You can unzip the file and open it via Visual Studio (Click Open Project -> and select the `Interpolator.vcxproj` file located in Interpolator/Interpolator/Interpolator/).
 
 ## User Interface
 The user experience can be divided into 2 phases:
