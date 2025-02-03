@@ -2,6 +2,16 @@
 
 This document contains the technical implementation details of the Interpolator software.
 
+```
+Submitted by Team 10 for CS346 Assignment 2.
+Team Members:
+    Adarsh Gupta (220101003)
+    Chouhan Shreyan (220101031)
+    D Hayagrivan (220101032)
+    Divyansh Chandak (220101039)
+    Yash Jain (220101115)
+```
+
 # Overall Workflow
 The overall technical workflow proceeds as follows:
 1. Display Initialisation Prompts: Implemented in the `displayInitPrompt()` function and just displays preset strings.
