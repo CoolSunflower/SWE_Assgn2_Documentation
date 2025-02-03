@@ -352,7 +352,7 @@ The function computes the value of the interpolating polynomial for a given \( X
 
 #### Steps:
 
-1. **Initialize** the result to 0.0.
+1. Initialize the result to 0.0.
 2. For each data point \( (x_i, y_i) \):
    - Compute the Lagrange basis polynomial \( L_i(x) \) by iterating over all other data points \( j \neq i \).
    - Multiply the result by the corresponding \( y_i \).
@@ -368,21 +368,13 @@ double lagrangeInterpolation(double X)
     int n = points.size();
 
     // Iterate over each point in the dataset
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++){
         double term = points[i].y; // Start with the y-value at point i
 
         // Compute the Lagrange basis polynomial L_i(x)
-        for (int j = 0; j < n; j++)
-        {
-            if (j != i)
-            {
-                // Ensure there are no duplicate x-values
-                if (points[i].x == points[j].x)
-                {
-                    cerr << "[Error] Duplicate x-values detected, which will result in division by zero." << endl;
-                    exit(1);
-                }
+        for (int j = 0; j < n; j++){
+            if (j != i){
+                - Ensure there are no duplicate x-values
 
                 // Multiply by the fraction for L_i(x)
                 term *= (X - points[j].x) / (points[i].x - points[j].x);
@@ -496,8 +488,7 @@ C.  *Format Output and Print it*:
 		stringstream ss;
 		bool first = true;
 
-		for (int i = finalCoeff.size() - 1; i >= 0; --i)
-		{
+		for (int i = finalCoeff.size() - 1; i >= 0; --i){
 			if (abs(finalCoeff[i]) < 1e-10)
 				continue; // Skip near-zero coefficients
 
@@ -506,8 +497,7 @@ C.  *Format Output and Print it*:
 			if (abs(finalCoeff[i] - 1) > 1e-10 || i == 0)
 				ss << fixed << setprecision(4) << finalCoeff[i];
 
-			if (i > 0)
-			{
+			if (i > 0){
 				ss << "x";
 				if (i > 1)
 					ss << "^" << i;
@@ -517,12 +507,10 @@ C.  *Format Output and Print it*:
 		}
 
 		string result = ss.str();
-		if (result.empty())
-		{
+		if (result.empty()){
 			cout << 0 << endl;
 		}
-		else
-		{
+		else{
 			cout << result << endl;
 		}
 
